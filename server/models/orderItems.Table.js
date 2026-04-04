@@ -15,7 +15,7 @@ export async function createOrderItemsTable() {
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,         
                 FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE         
-        );
+            );
         `;
         await database.query(query);
         
@@ -23,4 +23,4 @@ export async function createOrderItemsTable() {
         console.error("Error creating order items table:", error);
         process.exit(1);
     }
-}
+} 
