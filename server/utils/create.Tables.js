@@ -10,13 +10,12 @@ import { createOrderItemsTable } from "../models/orderItems.Table.js";
 export const createTables = async () => {
     try {
         await createUserTable();
-        await createShippingInfoTable();
         await createProductTable();
         await createProductReviewsTable();
-        await createPaymentsTable();
         await createOrdersTable();
+        await createShippingInfoTable();
+        await createPaymentsTable();
         await createOrderItemsTable();
-        console.log("All Tables created successfully");
         } catch (error) {
             console.error("Error creating tables:", error);
     }

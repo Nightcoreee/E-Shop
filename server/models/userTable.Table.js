@@ -5,7 +5,7 @@ export async function createUserTable() {
         const query = `
             CREATE TABLE IF NOT EXISTS users (
                 id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-                name NVARCHAR(255) NOT NULL CHECK (char_length(name) >= 3),
+                name VARCHAR(255) NOT NULL CHECK (char_length(name) >= 3),
                 email VARCHAR(100) UNIQUE NOT NULL,
                 password TEXT NOT NULL,
                 role VARCHAR(10) DEFAULT 'User' CHECK (role IN ('User', 'Admin')),
