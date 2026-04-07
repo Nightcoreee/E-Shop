@@ -1,27 +1,28 @@
-import ErrorHandler from "./middlewares/errorMiddleware.js";
-import { catchAsyncError } from "./middlewares/catchAsyncError.js";
-import database from "./database/db.js";
-import bcrypt from "bcryptjs";
+import { ErrorHandler } from "../middlewares/errorMiddleware.js";
+import { catchAsyncError } from "../middlewares/catchAsyncError.js";
+import database from "../database/db.js";
+import bcrypt from "bcrypt";
+import { sendToken } from "../utils/jwt.Token.js";
 
 export const register = catchAsyncError(async (req, res, next) => {
     const { email, name, password } = req.body;
     if (!email || !name || !password) {
-        return next(new ErrorHandler(400, "Please provide all required fields"));
+        return next(new ErrorHandler("Please provide all required fields", 400));
     }
+
     const isAccountExist = await database
         .query("SELECT * FROM users WHERE email = $1", [email]);
-    if (isAccountExist.row.length > 0) {
-        return next(new ErrorHandler(400, "Email already exists"));
+    if (isAccountExist.rows.length > 0) {
+        return next(new ErrorHandler("Email already exists", 400));
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    await database.query(
-        "INSERT INTO users (email, name, password) VALUES ($1, $2, $3)",
+    const user = await database.query(
+        "INSERT INTO users (email, name, password) VALUES ($1, $2, $3) RETURNING *",
         [email, name, hashedPassword]
     );
-    res.status(201).json({
-        success: true,
-        message: "User registered successfully"
-    });
+
+    sendToken(user.rows[0], "User registered successfully", 201, res);
 });
 
 export const login = catchAsyncError(async (req, res, next) => {});

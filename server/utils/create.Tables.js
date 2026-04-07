@@ -1,4 +1,4 @@
-import { createUserTable } from "../models/userTable.Table.js";
+import { createUserTable } from "../models/user.Table.js";
 import { createShippingInfoTable } from "../models/shippinginfo.Table.js";
 import { createProductTable } from "../models/product.Table.js";
 import { createProductReviewsTable } from "../models/productReviews.Table.js";

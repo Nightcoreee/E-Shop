@@ -1,6 +1,6 @@
 
-class ErrorHandler extends Error {
-    constructor(statusCode, message) {
+export class ErrorHandler extends Error {
+    constructor(message, statusCode) {
         super(message);
         this.statusCode = statusCode;
     }
@@ -12,23 +12,23 @@ export const errorMiddleware = (err, req, res, next) => {
 
     if(err.code === 11000) {
         const message = "Duplicate field value entered";
-        err = new ErrorHandler(400, message);
+        err = new ErrorHandler(message, 400);
     }
 
     if(err.name === "JsonWebTokenError") {
         const message = "Json Web Token is invalid, try again";
-        err = new ErrorHandler(400, message);
+        err = new ErrorHandler(message, 400);
     }
 
     if(err.name === "TokenExpiredError") {
         const message = "Json Web Token is expired, try again";
-        err = new ErrorHandler(400, message);
+        err = new ErrorHandler(message, 400);
     }
     
     const errorMessage = err.errors 
         ? Object.values(err.errors)
             .map((error) => error.message)
-            .join(", ") 
+            .join(" ") 
         : err.message;
 
         return res.status(err.statusCode).json({
