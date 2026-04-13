@@ -29,3 +29,10 @@ export const passwordValidator = (password) => {
     const failedRule = Password_Rules.find(rule => !rule.test(password));
     return failedRule ?  failedRule.message : null;
 }
+
+export const emailValidator = (email) => {
+    if(!/^[^\s@]+@gmail\.com$/.test(email)) {
+        return "Email must be a 'user@gmail.com' format";
+    }
+    return null;
+}
