@@ -1,4 +1,4 @@
-import { ErrorHandler } from "../middlewares/errorMiddleware.js";
+import { ErrorHandler } from "../middlewares/error.Middleware.js";
 import { catchAsyncError } from "../middlewares/catchAsyncError.js";
 import database from "../database/db.js";
 import bcrypt from "bcrypt";
@@ -70,5 +70,12 @@ export const login = catchAsyncError(async (req, res, next) => {
     sendToken(user.rows[0], "Logged in successfully", 200, res);
 
 });
-export const getUser = catchAsyncError(async (req, res, next) => {});
+
+
+export const getUser = catchAsyncError(async (req, res, next) => {
+    const { email, name } = req.body;
+
+});
+
+
 export const logout = catchAsyncError(async (req, res, next) => {});
