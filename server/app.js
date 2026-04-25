@@ -4,8 +4,8 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import { createTables } from "./utils/create.Tables.js";
-import { errorMiddleware } from "./middlewares/errorMiddleware.js";
-import authRoutes from "./router/authRoutes.js";
+import { errorMiddleware } from "./middlewares/error.Middleware.js";
+import authRoutes from "./router/auth.Routes.js";
 
 const app = express();
 

@@ -73,9 +73,27 @@ export const login = catchAsyncError(async (req, res, next) => {
 
 
 export const getUser = catchAsyncError(async (req, res, next) => {
-    const { email, name } = req.body;
-
+    const { user } = req;
+    res.status(200).json({
+        sucess: true,
+        user,
+    });
 });
 
 
-export const logout = catchAsyncError(async (req, res, next) => {});
+export const logout = catchAsyncError(async (req, res, next) => {
+    res.cookie("token", null, {
+        expires: new Date(Date.now()),
+        httpOnly: true,
+    });
+    res.status(200).json({
+        success: true,
+        message: "Logged out successfully"
+    });
+
+});
+
+export const forgotPassword = catchAsyncError(async (req, res, next) => {});
+
+export const resetPassword = catchAsyncError(async (req, res, next) => {});
+

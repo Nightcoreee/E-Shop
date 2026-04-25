@@ -12,7 +12,7 @@ export const isAuthenticated = catchAsyncError(async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
-    const user = await database.query("SELECT * FROM users WHERE id = $1", [decoded.id]);
+    const user = await database.query("SELECT * FROM users WHERE id = $1 LIMIT 1", [decoded.id]);
 
     if (!user.rows[0]) {
         return next(new errorMiddleware("User not found", 404));
