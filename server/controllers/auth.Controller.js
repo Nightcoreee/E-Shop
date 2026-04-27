@@ -93,7 +93,9 @@ export const logout = catchAsyncError(async (req, res, next) => {
 
 });
 
-export const forgotPassword = catchAsyncError(async (req, res, next) => {});
+export const forgotPassword = catchAsyncError(async (req, res, next) => {
+    
+});
 
 export const resetPassword = catchAsyncError(async (req, res, next) => {});
 
