@@ -71,7 +71,7 @@ export const login = catchAsyncError(async (req, res, next) => {
 
 });
 
-
+//GET /api/auth/me
 export const getUser = catchAsyncError(async (req, res, next) => {
     const { user } = req;
     res.status(200).json({
@@ -80,7 +80,7 @@ export const getUser = catchAsyncError(async (req, res, next) => {
     });
 });
 
-
+//GET /api/auth/logout
 export const logout = catchAsyncError(async (req, res, next) => {
     res.cookie("token", null, {
         expires: new Date(Date.now()),
@@ -94,7 +94,18 @@ export const logout = catchAsyncError(async (req, res, next) => {
 });
 
 export const forgotPassword = catchAsyncError(async (req, res, next) => {
+    const { email } = req.body;
+    const { frontendUrl } = req.body;
+
+    let userResult = await database.query("SELECT * FROM users WHERE email = $1", [email]);
     
+    if(userResult.rows.length === 0) {
+        return next(new ErrorHandler("User not found with this email", 404));
+    }
+
+    const user = userResult.rows[0];
+    const { hashedToken, resetPasswordExpireTime, resetToken } = genResetPasswordToken();
+
 });
 
 export const resetPassword = catchAsyncError(async (req, res, next) => {});
