@@ -4,8 +4,8 @@ import database from "../database/db.js";
 import bcrypt from "bcrypt";
 import { sendToken } from "../utils/jwt.Token.js";
 import { emailValidator, passwordValidator } from "../utils/user.Validator.js";
-import { genResetPasswordToken } from "../utils/resetPasswordToken.js";
-import { genEmailTemplate } from "../utils/emailTemplate.js";
+import { genResetPasswordToken } from "../utils/ResetPassword.Token.js";
+import { genForgotPasswordEmailTemplate } from "../utils/ForgotPasswordEmail.Template.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
 import { v2 as cloudinary } from "cloudinary";
@@ -113,8 +113,8 @@ export const forgotPassword = catchAsyncError(async (req, res, next) => {
     const { hashedToken, resetPasswordExpireTime, resetToken } = genResetPasswordToken();
 
     await database.query(
-        "UPDATE users SET reset_password_token = $1, reset_pasword_expires = to_timestamp($2) WHERE id = $3",
-        [hashedToken, resetPasswordExpireTime / 1000, email] 
+        "UPDATE users SET reset_password_token = $1, reset_password_expires = to_timestamp($2) WHERE id = $3",
+        [hashedToken, resetPasswordExpireTime / 1000, user.id] 
     );
 
     const resetPasswordUrl = `${frontendUrl}/password/reset/${resetToken}`;
@@ -133,7 +133,7 @@ export const forgotPassword = catchAsyncError(async (req, res, next) => {
         });
     } catch (error) {
         await database.query(
-            "UPDATE users SET reset_password_token = NULL, reset_password_expires = NULL WHERE id = $1", [email]
+            "UPDATE users SET reset_password_token = NULL, reset_password_expires = NULL WHERE id = $1", [user.id]
         );
         return next(new ErrorHandler("Failed to send email", 500));
     }
