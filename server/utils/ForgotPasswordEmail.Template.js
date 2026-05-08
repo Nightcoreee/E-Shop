@@ -17,7 +17,7 @@ export const genForgotPasswordEmailTemplate = (resetPasswordUrl) => {
             
             <footer style="margin-top: 20px; text-align: center; font-size: 14px; color: #666;">
                 <p>Thank you,<br>Ecommerce Team</p>
-                <p style="font-size: 12px; color: #444;">This is an automated message. Please do not reply to this email.</p>
+                <p style="font-size: 12px; color: #f70e0e;">This is an automated message. Please do not reply to this email.</p>
             </footer>
         </div>
     `;

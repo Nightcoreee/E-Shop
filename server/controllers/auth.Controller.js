@@ -140,5 +140,39 @@ export const forgotPassword = catchAsyncError(async (req, res, next) => {
     }
 });
 
-export const resetPassword = catchAsyncError(async (req, res, next) => {});
+//PUT /api/auth/password/reset/:token
+export const resetPassword = catchAsyncError(async (req, res, next) => {
+    const { token } = req.params;
+    const resetPasswordToken = crypto
+        .createHash("sha256")
+        .update(token)
+        .digest("hex");
+    
+        const user = await database.query(
+        "SELECT * FROM users WHERE reset_password_token = $1 AND reset_password_expires > NOW()",
+        [resetPasswordToken]
+    );
+
+    if (user.rows.length === 0) {
+        return next(new ErrorHandler("Invalid or expired reset token", 400));
+    }
+
+    const passwordError = passwordValidator(req.body.password);
+    if (passwordError) {
+        return next(new ErrorHandler(passwordError, 400));
+    }
+
+    if(req.body.password !== req.body.confirmPassword) {
+        return next(new ErrorHandler("Password and confirm password do not match", 400));
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    const updatedUser = await database.query(
+        `UPDATE users SET password = $1, reset_password_token = NULL, reset_password_expires = NULL WHERE id = $2 RETURNING *`,
+        [hashedPassword, user.rows[0].id]
+    );
+
+    sendToken(updatedUser.rows[0], "Password reset successfully", 200, res);
+});
 
