@@ -181,7 +181,7 @@ export const resetPassword = catchAsyncError(async (req, res, next) => {
     sendToken(updatedUser.rows[0], "Password reset successfully", 200, res);
 });
 
-
+//PUT /api/auth/password/update
 export const updatePassword = catchAsyncError(async (req, res, next) => {
     const { currentPassword, newPassword, confirmPassword} = req.body;
     
@@ -210,5 +210,54 @@ export const updatePassword = catchAsyncError(async (req, res, next) => {
     res.status(200).json({
         success: true,
         message: "Password updated successfully"
+    });
+});
+
+//PUT /api/auth/profile/update
+export const updateProfile = catchAsyncError(async (req, res, next) => {
+    const { name, email } = req.body;
+
+    if(!name || !email) {
+        return next(new ErrorHandler("Please provide all required fields", 400));   
+    }
+
+    let avatar = {};
+    if(req.files && req.files.avatar) {
+        const { avatar} = req.files;
+        if(req.user?.avatar?.public_id) {
+            await cloudinary.uploader.destroy(req.user.avatar.public_id);
+        }
+
+        const newProfileImage = await cloudinary.uploader.upload(
+            avatar.tempFilePath,
+            {
+                folder: "Ecommerce_avatars",
+                width: 150,
+                crop: "scale",
+            }
+        );
+        avatarData = {
+            public_id: newProfileImage.public_id,
+            url: newProfileImage.secure_url,
+        }
+    }
+
+    let user;
+    if (Object.keys(avatarData).length === 0) {
+        user = await database.query(
+        "UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *",
+        [name, email, req.user.id]
+        );
+    } else {
+        user = await database.query(
+        "UPDATE users SET name = $1, email = $2, avatar = $3 WHERE id = $4 RETURNING *",
+        [name, email, avatarData, req.user.id]
+        );
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Profile updated successfully.",
+        user: user.rows[0],
     });
 });
