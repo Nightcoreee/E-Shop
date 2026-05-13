@@ -143,6 +143,7 @@ export const forgotPassword = catchAsyncError(async (req, res, next) => {
 //PUT /api/auth/password/reset/:token
 export const resetPassword = catchAsyncError(async (req, res, next) => {
     const { token } = req.params;
+    const { password, confirmPassword } = req.body;
     const resetPasswordToken = crypto
         .createHash("sha256")
         .update(token)
@@ -155,6 +156,10 @@ export const resetPassword = catchAsyncError(async (req, res, next) => {
 
     if (user.rows.length === 0) {
         return next(new ErrorHandler("Invalid or expired reset token", 400));
+    }
+
+    if (!password || !confirmPassword) {
+        return next(new ErrorHandler("Please provide all required fields", 400));
     }
 
     const passwordError = passwordValidator(req.body.password);
@@ -176,3 +181,34 @@ export const resetPassword = catchAsyncError(async (req, res, next) => {
     sendToken(updatedUser.rows[0], "Password reset successfully", 200, res);
 });
 
+
+export const updatePassword = catchAsyncError(async (req, res, next) => {
+    const { currentPassword, newPassword, confirmPassword} = req.body;
+    
+    if(!currentPassword || !newPassword || !confirmPassword) {
+        return next(new ErrorHandler("Please provide all required fields", 400));
+    }
+
+    const isPasswordMatch = await bcrypt.compare(currentPassword, req.user.password);
+    if(!isPasswordMatch) {
+        return next(new ErrorHandler("Current password is incorrect", 401));
+    }
+
+    if(newPassword !== confirmPassword) {
+        return next(new ErrorHandler("New password and confirm password do not match", 400));
+    }
+
+    const passwordError = passwordValidator(newPassword);
+    if (passwordError) {
+        return next(new ErrorHandler(passwordError, 400));
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await database.query(`UPDATE users SET password = $1 where id = $2`, [hashedPassword, req.user.id]);
+
+    res.status(200).json({
+        success: true,
+        message: "Password updated successfully"
+    });
+});
