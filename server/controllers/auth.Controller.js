@@ -10,7 +10,6 @@ import { sendEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
 import { v2 as cloudinary } from "cloudinary";
 
-
 // Run function middleware to catch any erorrs
 //POST /api/auth/register
 export const register = catchAsyncError(async (req, res, next) => {
@@ -221,9 +220,18 @@ export const updateProfile = catchAsyncError(async (req, res, next) => {
         return next(new ErrorHandler("Please provide all required fields", 400));   
     }
 
-    let avatar = {};
+    const existing = await database.query(
+        "SELECT id FROM users WHERE email = $1 AND id != $2",
+        [email, req.user.id]
+    );
+    
+    if (existing.rows.length > 0) {
+        return next(new ErrorHandler("Email already in use", 400));
+    }
+
+    let avatarData = {};
     if(req.files && req.files.avatar) {
-        const { avatar} = req.files;
+        const { avatar } = req.files;
         if(req.user?.avatar?.public_id) {
             await cloudinary.uploader.destroy(req.user.avatar.public_id);
         }
