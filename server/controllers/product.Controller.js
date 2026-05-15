@@ -1,7 +1,6 @@
 import { catchAsyncError } from "../middlewares/catchAsyncError.js";
 import database from "../database/db.js";
 import { v2 as cloudinary } from "cloudinary";
-import ErrorHandler from "../utils/ErrorHandler.js";
 
 export const createProduct = catchAsyncError(async (req, res, next) => {
     const { name, description, price, category } = req.body;
@@ -34,7 +33,7 @@ export const createProduct = catchAsyncError(async (req, res, next) => {
         [
             name, 
             description, 
-            price / 283, 
+            price, 
             category, 
             stock,
             JSON.stringify(uploadImages), 
