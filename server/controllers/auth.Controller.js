@@ -217,36 +217,45 @@ export const updateProfile = catchAsyncError(async (req, res, next) => {
     const { name, email } = req.body;
 
     if(!name || !email) {
-        return next(new ErrorHandler("Please provide all required fields", 400));   
+        return next(new ErrorHandler("Please provide all required fields", 400));
+    }
+
+    const emailError = emailValidator(email);
+    if (emailError) {
+        return next(new ErrorHandler(emailError, 400));
     }
 
     const existing = await database.query(
         "SELECT id FROM users WHERE email = $1 AND id != $2",
         [email, req.user.id]
     );
-    
+
     if (existing.rows.length > 0) {
         return next(new ErrorHandler("Email already in use", 400));
     }
 
     let avatarData = {};
     if(req.files && req.files.avatar) {
-        const { avatar } = req.files;
-        if(req.user?.avatar?.public_id) {
-            await cloudinary.uploader.destroy(req.user.avatar.public_id);
-        }
-
-        const newProfileImage = await cloudinary.uploader.upload(
-            avatar.tempFilePath,
-            {
-                folder: "Ecommerce_avatars",
-                width: 150,
-                crop: "scale",
+        try {
+            const { avatar } = req.files;
+            if(req.user?.avatar?.public_id) {
+                await cloudinary.uploader.destroy(req.user.avatar.public_id);
             }
-        );
-        avatarData = {
-            public_id: newProfileImage.public_id,
-            url: newProfileImage.secure_url,
+
+            const newProfileImage = await cloudinary.uploader.upload(
+                avatar.tempFilePath,
+                {
+                    folder: "Ecommerce_avatars",
+                    width: 150,
+                    crop: "scale",
+                }
+            );
+            avatarData = {
+                public_id: newProfileImage.public_id,
+                url: newProfileImage.secure_url,
+            }
+        } catch (error) {
+            return next(new ErrorHandler(error.message || "Failed to upload avatar", 500));
         }
     }
 
