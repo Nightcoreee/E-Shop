@@ -9,6 +9,6 @@ import {
 
 const router = express.Router();
 
-router.post("/admin/create", isAuthenticated, authorizeRoles("admin"), createProduct);
+router.post("/admin/create", isAuthenticated, authorizeRoles("Admin"), createProduct);
 
 export default router;

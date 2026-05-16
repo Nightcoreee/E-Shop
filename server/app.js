@@ -23,6 +23,7 @@ app.use(cookieParser());
 app.use(fileUpload({
     tempFileDir:  "./uploads",
     useTempFiles: true,
+    parseNonFileFields: true,
 }));
 
 app.use("/api/v1/auth", authRoutes);

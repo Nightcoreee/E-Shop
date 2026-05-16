@@ -1,13 +1,15 @@
 import { catchAsyncError } from "../middlewares/catchAsyncError.js";
 import database from "../database/db.js";
 import { v2 as cloudinary } from "cloudinary";
+import { ErrorHandler }from "../middlewares/error.Middleware.js";
 
+//POST /api/product/admin/create
 export const createProduct = catchAsyncError(async (req, res, next) => {
-    const { name, description, price, category } = req.body;
+    const { name, description, price, category, stock } = req.body;
 
     const created_by = req.user.id;
 
-    if(!name || !description || !price || !category) {
+    if(!name || !description || !price || !category || !stock) {
         return next(new ErrorHandler("Please provide all required fields", 400));
     }
 
