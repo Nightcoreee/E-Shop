@@ -237,7 +237,8 @@ export const updateProfile = catchAsyncError(async (req, res, next) => {
     let avatarData = {};
     if(req.files && req.files.avatar) {
         try {
-            const { avatar } = req.files;
+            const avatar = Array.isArray(req.files.avatar) ? req.files.avatar[0] : req.files.avatar;
+
             if(req.user?.avatar?.public_id) {
                 await cloudinary.uploader.destroy(req.user.avatar.public_id);
             }

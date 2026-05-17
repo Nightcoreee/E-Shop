@@ -33,12 +33,12 @@ export const createProduct = catchAsyncError(async (req, res, next) => {
     const product = await database.query(
         `INSERT INTO products (name, description, price, category, stock, images, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
         [
-            name, 
-            description, 
-            price, 
-            category, 
+            name,
+            description,
+            price,
+            category,
             stock,
-            JSON.stringify(uploadImages), 
+            JSON.stringify(uploadImages),
             created_by
         ]
     );
