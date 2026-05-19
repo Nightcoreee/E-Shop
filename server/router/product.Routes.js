@@ -1,6 +1,8 @@
 import express from "express";
 import {
     createProduct,
+    fetchAllProducts,
+    fetchSingleProduct,
 } from "../controllers/product.Controller.js";
 import { 
     isAuthenticated,
@@ -10,6 +12,15 @@ import {
 const router = express.Router();
 
 router.post("/admin/create", isAuthenticated, authorizeRoles("Admin"), createProduct);
-router.get("/", fectchAllProducts);
+router.get("/", fetchAllProducts);
+router.get("/singleProduct/:productId", fetchSingleProduct);
+router.put("/post-new/review/:productId", isAuthenticated, postProductReview);
+router.delete("/delete/review/:productId", isAuthenticated, deleteReview);
+router.put(
+  "/admin/update/:productId",
+  isAuthenticated,
+  authorizeRoles("Admin"),
+  updateProduct
+);
 
 export default router;
