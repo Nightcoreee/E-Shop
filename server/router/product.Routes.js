@@ -3,6 +3,7 @@ import {
     createProduct,
     fetchAllProducts,
     fetchSingleProduct,
+    postProductReview,
 } from "../controllers/product.Controller.js";
 import { 
     isAuthenticated,
