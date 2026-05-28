@@ -175,7 +175,6 @@ export const fetchAllProducts = catchAsyncError (async (req, res, next) => {
   });
 });
 
-
 //GET /api/product/singleProduct/:productId
 export const fetchSingleProduct = catchAsyncError(async (req, res, next) => {
   const { productId } = req.params;
@@ -209,7 +208,7 @@ export const fetchSingleProduct = catchAsyncError(async (req, res, next) => {
   });
 });
 
-
+//GET /api/product/post-new/review/:productId
 export const postProductReview = catchAsyncError(async (req, res, next) => {
   const { productId } = req.params;
   const { rating, comment } = req.body;
@@ -280,6 +279,35 @@ export const postProductReview = catchAsyncError(async (req, res, next) => {
     success: true,
     message: "Review posted.",
     review: review.rows[0],
+    product: updatedProduct.rows[0],
+  });
+});
+
+//DELETE /api/product/delete/review/:productId
+export const deleteReview = catchAsyncError(async (req, res, next) => {
+  const { productID } = req.params;
+
+  const review = await database.query(
+    `DELETE FROM reviews WHERE product_id = $1 AND user_id = $2 RETURNING *`, [productID, req.user.id]
+  );
+
+  if (review.rows.length === 0) {
+    return next(new ErrorHandler("Review not found", 404));
+  }
+
+  const allReviews = await database.query(
+    `SELECT AVG(rating) AS avg_rating FROM reviews WHERE product_id = $1`, [productID]
+  );
+
+  const newAvgRating = allReviews.rows[0].avg_rating;
+
+  const updatedProduct = await database.query(
+    `UPDATE products SET ratings = $1 WHERE id = $2 RETURNING *`, [newAvgRating, productID]
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Review deleted successfully",
     product: updatedProduct.rows[0],
   });
 });

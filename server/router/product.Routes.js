@@ -4,6 +4,7 @@ import {
     fetchAllProducts,
     fetchSingleProduct,
     postProductReview,
+    deleteReview,
 } from "../controllers/product.Controller.js";
 import { 
     isAuthenticated,
@@ -12,16 +13,11 @@ import {
 
 const router = express.Router();
 
-router.post("/admin/create", isAuthenticated, authorizeRoles("Admin"), createProduct);
 router.get("/", fetchAllProducts);
+router.post("/admin/create", isAuthenticated, authorizeRoles("Admin"), createProduct);
+router.put("/admin/update/:productId",isAuthenticated,authorizeRoles("Admin"),updateProduct);
 router.get("/singleProduct/:productId", fetchSingleProduct);
 router.put("/post-new/review/:productId", isAuthenticated, postProductReview);
 router.delete("/delete/review/:productId", isAuthenticated, deleteReview);
-router.put(
-  "/admin/update/:productId",
-  isAuthenticated,
-  authorizeRoles("Admin"),
-  updateProduct
-);
 
 export default router;
