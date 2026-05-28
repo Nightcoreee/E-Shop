@@ -2,6 +2,7 @@ import { catchAsyncError } from "../middlewares/catchAsyncError.js";
 import database from "../database/db.js";
 import { v2 as cloudinary } from "cloudinary";
 import { ErrorHandler }from "../middlewares/error.Middleware.js";
+import filterKeywords from "../utils/filter.Keywords.js";
 
 //POST /api/product/admin/create
 export const createProduct = catchAsyncError(async (req, res, next) => {
@@ -371,7 +372,6 @@ export const deleteProduct = catchAsyncError(async (req, res, next) => {
 
 //POST /api/product/ai-search - AI Filtered Products
 export const fetchAIFilteredProducts = catchAsyncError(async (req, res, next) => {
-async (req, res, next) => {
     const { userPrompt } = req.body;
     if (!userPrompt) {
       return next(new ErrorHandler("Provide a valid prompt.", 400));
@@ -379,94 +379,36 @@ async (req, res, next) => {
 
     const filterKeywords = (query) => {
       const stopWords = new Set([
-        "the",
-        "they",
-        "them",
-        "then",
-        "I",
-        "we",
-        "you",
-        "he",
-        "she",
-        "it",
-        "is",
-        "a",
-        "an",
-        "of",
-        "and",
-        "or",
-        "to",
-        "for",
-        "from",
-        "on",
-        "who",
-        "whom",
-        "why",
-        "when",
-        "which",
-        "with",
-        "this",
-        "that",
-        "in",
-        "at",
-        "by",
-        "be",
-        "not",
-        "was",
-        "were",
-        "has",
-        "have",
-        "had",
-        "do",
-        "does",
-        "did",
-        "so",
-        "some",
-        "any",
-        "how",
-        "can",
-        "could",
-        "should",
-        "would",
-        "there",
-        "here",
-        "just",
-        "than",
-        "because",
-        "but",
-        "its",
-        "it's",
-        "if",
-        ".",
-        ",",
-        "!",
-        "?",
-        ">",
-        "<",
-        ";",
-        "`",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
+        //Vietnamese
+        "tôi", "tui", "mình", "bạn", "anh", "chị", "em", "họ", "chúng",
+        "muốn", "cần", "tìm", "kiếm", "mua", "xem", "cho", "của", "được",
+        "và", "hoặc", "hay", "với", "về", "trong", "ngoài", "trên", "dưới",
+        "là", "có", "không", "những", "các", "một", "này", "đó", "kia",
+        "thì", "mà", "nên", "vì", "khi", "nếu", "để", "đã", "đang", "sẽ",
+        "rất", "lắm", "quá", "hơn", "nhất", "cũng", "vẫn", "còn", "lại",
+        "ở", "từ", "đến", "qua", "ra", "vào", "lên", "xuống", "đi", "thấy",
+        "biết", "làm", "gì", "nào", "sao", "đây", "khi", "ơi", "nhé",
+
+        //English
+        "the", "they", "them", "then", "I", "we", "you", "he", "she", "it",
+        "is", "a", "an", "of", "and", "or", "to", "for", "from", "on",
+        "who", "whom", "why", "when", "which", "with", "this", "that",
+        "in", "at", "by", "be", "not", "was", "were", "has", "have", "had",
+        "do", "does", "did", "so", "some", "any", "how", "can", "could",
+        "should", "would", "there", "here", "just", "than", "because",
+        "but", "its", "it's", "if", "me", "my", "show", "want", "need", "find",
+        "get", "look", "looking", "best", "good",
       ]);
 
       return query
         .toLowerCase()
-        .replace(/[^\w\s]/g, "")
+        .replace(/[^\p{L}\p{N}\s]/gu, "")
         .split(/\s+/)
-        .filter((word) => !stopWords.has(word))
+        .filter((word) => word.length > 1 && !stopWords.has(word))
         .map((word) => `%${word}%`);
     };
 
     const keywords = filterKeywords(userPrompt);
-    // STEP 1: Basic SQL Filtering
     const result = await database.query(
       `
         SELECT * FROM products
@@ -488,7 +430,6 @@ async (req, res, next) => {
       });
     }
 
-    // STEP 2: AI FILTERING
     const { success, products } = await getAIRecommendation(
       req,
       res,
@@ -498,8 +439,9 @@ async (req, res, next) => {
 
     res.status(200).json({
       success: success,
-      message: "AI filtered products.",
+      message: products.length === 0
+        ? "No products found matching your prompt."
+        : "AI filtered products.",
       products,
     });
-  }
 });
