@@ -25,3 +25,24 @@ export const getAllUsers = catchAsyncError(async (req, res, next) => {
     });
 });
 
+
+export const deleteUser = catchAsyncError(async (req, res, next) => {
+    const { id } = req.params;
+
+    const deleteUser = await database.query(`DELETE FROM users WHERE id = $1 RETURNING *`, [id]);
+
+    if (deleteUser.rowCount === 0) {
+        return next(new ErrorHandler("User not found", 404));
+    }
+
+    const avatar = deleteUser.rows[0].avatar;
+
+    if (avatar?.public_id) {
+        await cloudinary.uploader.destroy(avatar.public_id);
+    }      
+
+    res.status(200).json({
+        success: true,
+        message: "User deleted successfully."
+    });
+});
