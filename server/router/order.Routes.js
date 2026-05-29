@@ -1,8 +1,10 @@
 import express from "express";
 import {
     placeNewOrder,
-} from "../controllers/order.Controller.js";
+    fetchSingleOrder,
+    fetchMyOrders,
 
+} from "../controllers/order.Controller.js";
 import { 
     isAuthenticated,
     authorizeRoles
@@ -11,4 +13,7 @@ import {
 const router = express.Router();
 
 router.post("/new", isAuthenticated, placeNewOrder);
+router.get("/single/:orderId", isAuthenticated, fetchSingleOrder);
+router.get("/myorders", isAuthenticated, fetchMyOrders);
+
 export default router;

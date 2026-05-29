@@ -4,7 +4,7 @@ import database from "../database/db.js";
 import { v2 as cloudinary } from "cloudinary";
 import { getAIRecommendation } from "../utils/get.AIRecommendation.js";                                
 
-//POST /api/product/admin/create
+//POST /api/v1/product/admin/create
 export const createProduct = catchAsyncError(async (req, res, next) => {
     const { name, description, price, category, stock } = req.body;
 
@@ -51,7 +51,7 @@ export const createProduct = catchAsyncError(async (req, res, next) => {
     });
 });
 
-//GET /api/product?available=in-stock&price=10-100&category=electronics&ratings=4.5&search=phone&page=1
+//GET /api/v1/product?available=in-stock&price=10-100&category=electronics&ratings=4.5&search=phone&page=1
 export const fetchAllProducts = catchAsyncError (async (req, res, next) => {
     const { available, price, category, ratings, search } = req.query;
     const page = parseInt(req.query.page) || 1;
@@ -176,7 +176,7 @@ export const fetchAllProducts = catchAsyncError (async (req, res, next) => {
   });
 });
 
-//GET /api/product/singleProduct/:productId
+//GET /api/v1/product/singleProduct/:productId
 export const fetchSingleProduct = catchAsyncError(async (req, res, next) => {
   const { productId } = req.params;
 
@@ -209,7 +209,7 @@ export const fetchSingleProduct = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//GET /api/product/post-new/review/:productId
+//GET /api/v1/product/post-new/review/:productId
 export const postProductReview = catchAsyncError(async (req, res, next) => {
   const { productId } = req.params;
   const { rating, comment } = req.body;
@@ -284,7 +284,7 @@ export const postProductReview = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//DELETE /api/product/delete/review/:productId
+//DELETE /api/v1/product/delete/review/:productId
 export const deleteReview = catchAsyncError(async (req, res, next) => {
   const { productID } = req.params;
 
@@ -313,7 +313,7 @@ export const deleteReview = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//PUT /api/product/admin/update/:productId
+//PUT /api/v1/product/admin/update/:productId
 export const updateProduct = catchAsyncError(async (req, res, next) => {
   const { productId } = req.params;
   const { name, description, price, category, stock } = req.body;
@@ -340,7 +340,7 @@ export const updateProduct = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//DELETE /api/product/admin/delete/:productId - Only Admin can delete product                                         
+//DELETE /api/v1/product/admin/delete/:productId - Only Admin can delete product                                         
 export const deleteProduct = catchAsyncError(async (req, res, next) => {
   const { productId } = req.params;
 
@@ -370,7 +370,7 @@ export const deleteProduct = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//POST /api/product/ai-search - AI Filtered Products
+//POST /api/v1/product/ai-search - AI Filtered Products
 export const fetchAIFilteredProducts = catchAsyncError(async (req, res, next) => {
     const { userPrompt } = req.body;
     if (!userPrompt) {

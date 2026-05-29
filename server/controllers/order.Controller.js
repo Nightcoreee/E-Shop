@@ -1,10 +1,11 @@
-import { catchAsyncError } from "../utils/catchAsyncError.js";
-import { ErrorHandler } from "../utils/errorHandler.js";
+import { catchAsyncError } from "../middlewares/catchAsyncError.js";
+import { ErrorHandler } from "../middlewares/error.Middleware.js";
 import database from "../database/db.js";
 import { v2 as cloudinary } from "cloudinary";
+import { generatePaymentIntent } from "../utils/gen.PaymentIntent.js";
 
 //POST /api/v1/order/new
-export const placeNewOrder = catchAsyncErrors(async (req, res, next) => {
+export const placeNewOrder = catchAsyncError(async (req, res, next) => {
   const {
     full_name,
     state,
@@ -29,9 +30,7 @@ export const placeNewOrder = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  const items = Array.isArray(orderedItems)
-    ? orderedItems
-    : JSON.parse(orderedItems);
+  const items = Array.isArray(orderedItems) ? orderedItems : JSON.parse(orderedItems);  
 
   if (!items || items.length === 0) {
     return next(new ErrorHandler("No items in cart.", 400));
@@ -129,5 +128,93 @@ export const placeNewOrder = catchAsyncErrors(async (req, res, next) => {
     message: "Order placed successfully. Please proceed to payment.",
     paymentIntent: paymentResponse.clientSecret,
     total_price,
+  });
+});
+
+//GET /api/v1/order/single/:orderId
+export const fetchSingleOrder = catchAsyncError(async (req, res, next) => {
+  const { orderId } = req.params;
+
+  const result = await database.query(
+    `
+      SELECT 
+        o.*, 
+        COALESCE(
+        json_agg(
+          json_build_object(
+            'order_item_id', oi.id,
+            'order_id', oi.order_id,
+            'product_id', oi.product_id,
+            'quantity', oi.quantity,
+            'price', oi.price
+          )
+        ) FILTER (WHERE oi.id IS NOT NULL), '[]'
+        ) AS order_items,
+        json_build_object(
+          'full_name', s.full_name,
+          'state', s.state,
+          'city', s.city,
+          'country', s.country,
+          'address', s.address,
+          'pincode', s.pincode,
+          'phone', s.phone
+        ) AS shipping_info
+        FROM orders o
+          LEFT JOIN order_items oi ON o.id = oi.order_id
+          LEFT JOIN shipping_info s ON o.id = s.order_id
+      WHERE o.id = $1
+      GROUP BY o.id, s.id;
+    `,
+    [orderId]
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Order details fetched successfully.",
+    order: result.rows[0],
+  });
+});
+
+
+export const fetchMyOrders = catchAsyncError(async (req, res, next) => {
+  const result = await database.query(
+    `
+      SELECT 
+        o.*, 
+        COALESCE(
+        json_agg(
+          json_build_object(
+            'order_item_id', oi.id,
+            'order_id', oi.order_id,
+            'product_id', oi.product_id,
+            'quantity', oi.quantity,
+            'price', oi.price,
+            'image', oi.image,
+            'title', oi.title
+          ) 
+        ) FILTER (WHERE oi.id IS NOT NULL), '[]'
+        ) AS order_items,
+        json_build_object(
+          'full_name', s.full_name,
+          'state', s.state,
+          'city', s.city,
+          'country', s.country,
+          'address', s.address,
+          'pincode', s.pincode,
+          'phone', s.phone
+        ) AS shipping_info 
+        FROM orders o
+          LEFT JOIN order_items oi ON o.id = oi.order_id
+          LEFT JOIN shipping_info s ON o.id = s.order_id
+      WHERE o.buyer_id = $1 AND o.paid_at IS NOT NULL
+      GROUP BY o.id, s.id
+    `,
+    [req.user.id]
+  );
+
+  res.status(200).json({ 
+    success: true, 
+    message: "Orders fetched successfully.", 
+    myorders: result.rows,
   });
 });

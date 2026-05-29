@@ -8,6 +8,7 @@ import { errorMiddleware } from "./middlewares/error.Middleware.js";
 import authRoutes from "./router/auth.Routes.js";
 import productRoutes from "./router/product.Routes.js";
 import orderRoutes from "./router/order.Routes.js";
+import stripe from "stripe";
 
 const app = express();
 

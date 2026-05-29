@@ -4,14 +4,14 @@ import database from "../database/db.js";
 import bcrypt from "bcrypt";
 import { sendToken } from "../utils/jwt.Token.js";
 import { emailValidator, passwordValidator } from "../utils/user.Validator.js";
-import { genResetPasswordToken } from "../utils/ResetPassword.Token.js";
-import { genForgotPasswordEmailTemplate } from "../utils/ForgotPasswordEmail.Template.js";
+import { genResetPasswordToken } from "../utils/resetPassword.Token.js";
+import { genForgotPasswordEmailTemplate } from "../utils/forgotPasswordEmail.Template.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
 import { v2 as cloudinary } from "cloudinary";
 
 // Run function middleware to catch any erorrs
-//POST /api/auth/register
+//POST /api/v1/auth/register
 export const register = catchAsyncError(async (req, res, next) => {
     const { email, name, password } = req.body;
 
@@ -49,7 +49,7 @@ export const register = catchAsyncError(async (req, res, next) => {
     sendToken(user.rows[0], "User registered successfully", 201, res);
 });
 
-//POST /api/auth/login
+//POST /api/v1/auth/login
 export const login = catchAsyncError(async (req, res, next) => {
     const { email, password } = req.body;
 
@@ -76,7 +76,7 @@ export const login = catchAsyncError(async (req, res, next) => {
 
 });
 
-//GET /api/auth/me
+//GET /api/v1/auth/me
 export const getUser = catchAsyncError(async (req, res, next) => {
     const { user } = req;
     res.status(200).json({
@@ -85,7 +85,7 @@ export const getUser = catchAsyncError(async (req, res, next) => {
     });
 });
 
-//GET /api/auth/logout
+//GET /api/v1/auth/logout
 export const logout = catchAsyncError(async (req, res, next) => {
     res.cookie("token", null, {
         expires: new Date(Date.now()),
@@ -98,7 +98,7 @@ export const logout = catchAsyncError(async (req, res, next) => {
 
 });
 
-//POST /api/auth/forgot-password
+//POST /api/v1/auth/forgot-password
 export const forgotPassword = catchAsyncError(async (req, res, next) => {
     const { email } = req.body;
     const { frontendUrl } = req.body;
@@ -139,7 +139,7 @@ export const forgotPassword = catchAsyncError(async (req, res, next) => {
     }
 });
 
-//PUT /api/auth/password/reset/:token
+//PUT /api/v1/auth/password/reset/:token
 export const resetPassword = catchAsyncError(async (req, res, next) => {
     const { token } = req.params;
     const { password, confirmPassword } = req.body;
@@ -180,7 +180,7 @@ export const resetPassword = catchAsyncError(async (req, res, next) => {
     sendToken(updatedUser.rows[0], "Password reset successfully", 200, res);
 });
 
-//PUT /api/auth/password/update
+//PUT /api/v1/auth/password/update
 export const updatePassword = catchAsyncError(async (req, res, next) => {
     const { currentPassword, newPassword, confirmPassword} = req.body;
     
@@ -212,7 +212,7 @@ export const updatePassword = catchAsyncError(async (req, res, next) => {
     });
 });
 
-//PUT /api/auth/profile/update
+//PUT /api/v1/auth/profile/update
 export const updateProfile = catchAsyncError(async (req, res, next) => {
     const { name, email } = req.body;
 
