@@ -282,3 +282,19 @@ export const updateOrderStatus = catchAsyncError(async (req, res, next) => {
     order: updateOrder.rows[0],
   });
 });
+
+//DELETE /api/v1/order/admin/delete/:orderId
+export const deleteOrder = catchAsyncError(async (req, res, next) => {
+  const { orderId } = req.params;
+  const result = await database.query(`SELECT * FROM orders WHERE id = $1`, [orderId]);
+
+  if (result.rows.length === 0) {
+    return next(new ErrorHandler("Order not found.", 404));
+  }
+  
+  res.status(200).json({
+    success: true,
+    message: "Order deleted successfully.",
+    order: result.rows[0],
+  });
+});

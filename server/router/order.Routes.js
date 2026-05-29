@@ -4,7 +4,8 @@ import {
     fetchSingleOrder,
     fetchMyOrders,
     fetchAllOrders,
-    updateOrderStatus
+    updateOrderStatus,
+    deleteOrder
 } from "../controllers/order.Controller.js";
 import { 
     isAuthenticated,
@@ -19,4 +20,5 @@ router.get("/myorders", isAuthenticated, fetchMyOrders);
 
 router.get("/admin/all", isAuthenticated, authorizeRoles("Admin"), fetchAllOrders);
 router.put("/admin/update/:orderId", isAuthenticated, authorizeRoles("Admin"), updateOrderStatus);
+router.delete("/admin/delete/:orderId", isAuthenticated, authorizeRoles("Admin"), deleteOrder);
 export default router;
