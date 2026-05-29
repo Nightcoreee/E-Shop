@@ -258,3 +258,27 @@ export const fetchAllOrders = catchAsyncError(async (req, res, next) => {
     orders: result.rows,
   });
 });
+
+//PUT /api/v1/order/admin/update/:orderId
+export const updateOrderStatus = catchAsyncError(async (req, res, next) => {
+  const { status } = req.body;
+
+  if (!status) {
+    return next(new ErrorHandler("Please provide a valid status.", 400));
+  }
+
+  const { orderId } = req.params;
+  const result = await database.query(`SELECT * FROM orders WHERE id = $1`, [orderId]);
+  
+  if (result.rows.length === 0) {
+    return next(new ErrorHandler("Order not found.", 404));
+  }
+
+  const updateOrder = await database.query(`UPDATE orders SET order_status = $1 WHERE id = $2 RETURNING *`, [status, orderId]);
+
+  res.status(200).json({
+    success: true,
+    message: "Order status updated successfully.",
+    order: updateOrder.rows[0],
+  });
+});

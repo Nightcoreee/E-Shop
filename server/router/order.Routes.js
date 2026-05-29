@@ -3,7 +3,8 @@ import {
     placeNewOrder,
     fetchSingleOrder,
     fetchMyOrders,
-    fetchAllOrders
+    fetchAllOrders,
+    updateOrderStatus
 } from "../controllers/order.Controller.js";
 import { 
     isAuthenticated,
@@ -17,5 +18,5 @@ router.get("/single/:orderId", isAuthenticated, fetchSingleOrder);
 router.get("/myorders", isAuthenticated, fetchMyOrders);
 
 router.get("/admin/all", isAuthenticated, authorizeRoles("Admin"), fetchAllOrders);
-
+router.put("/admin/update/:orderId", isAuthenticated, authorizeRoles("Admin"), updateOrderStatus);
 export default router;
