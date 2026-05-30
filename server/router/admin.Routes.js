@@ -1,7 +1,8 @@
 import express from "express";
 import {
     getAllUsers,
-    deleteUser
+    deleteUser,
+    dashboardStats
 } from "../controllers/admin.Controller.js";
 import {
     isAuthenticated,
@@ -10,7 +11,7 @@ import {
 
 const router = express.Router();
 
-router.get("/users", isAuthenticated, authorizeRoles("Admin"), getAllUsers);
+router.get("/getallusers", isAuthenticated, authorizeRoles("Admin"), getAllUsers);
 router.delete("/users/:id", isAuthenticated, authorizeRoles("Admin"), deleteUser);
-
+router.get("/dashboard/stats", isAuthenticated, authorizeRoles("Admin"), dashboardStats);
 export default router;
