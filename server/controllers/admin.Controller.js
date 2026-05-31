@@ -190,7 +190,7 @@ export const dashboardStats = catchAsyncError(async (req, res, next) => {
     todayRevenue,
     yesterdayRevenue,
     totalUsersCount,
-    orderStatusCounts,
+    orderStatusCount,
     monthlySales,
     currentMonthSales,
     topSellingProducts,
