@@ -167,6 +167,10 @@ export const fetchAllProducts = catchAsyncError (async (req, res, next) => {
   `;
     const topRatedResult = await database.query(topRatedQuery);
 
+  if(result.rows.length === 0) {
+    return next(new ErrorHandler("No products found", 404));
+  }
+
   res.status(200).json({
     success: true,
     products: result.rows,
@@ -176,7 +180,7 @@ export const fetchAllProducts = catchAsyncError (async (req, res, next) => {
   });
 });
 
-//GET /api/v1/product/singleProduct/:productId
+//GET /api/v1/product/single-product/:productId
 export const fetchSingleProduct = catchAsyncError(async (req, res, next) => {
   const { productId } = req.params;
 
@@ -201,6 +205,10 @@ export const fetchSingleProduct = catchAsyncError(async (req, res, next) => {
          GROUP BY p.id`,
     [productId]
   );
+
+  if (result.rows.length === 0) {
+    return next(new ErrorHandler("Product not found", 404));
+  }
 
   res.status(200).json({
     success: true,

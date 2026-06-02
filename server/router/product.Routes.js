@@ -21,7 +21,7 @@ router.post("/admin/create", isAuthenticated, authorizeRoles("Admin"), createPro
 router.put("/admin/update/:productId",isAuthenticated,authorizeRoles("Admin"),updateProduct);
 router.delete("/admin/delete/:productId",isAuthenticated,authorizeRoles("Admin"),deleteProduct);
 
-router.get("/singleProduct/:productId", fetchSingleProduct);
+router.get("/single-product/:productId", fetchSingleProduct);
 router.put("/post-new/review/:productId", isAuthenticated, postProductReview);
 router.delete("/delete/review/:productId", isAuthenticated, deleteReview);
 router.post("/ai-search", isAuthenticated, fetchAIFilteredProducts);
