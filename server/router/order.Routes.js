@@ -16,7 +16,7 @@ const router = express.Router();
 
 router.post("/new", isAuthenticated, placeNewOrder);
 router.get("/single/:orderId", isAuthenticated, fetchSingleOrder);
-router.get("/myorders", isAuthenticated, fetchMyOrders);
+router.get("/my-orders", isAuthenticated, fetchMyOrders);
 
 router.get("/admin/all", isAuthenticated, authorizeRoles("Admin"), fetchAllOrders);
 router.put("/admin/update/:orderId", isAuthenticated, authorizeRoles("Admin"), updateOrderStatus);

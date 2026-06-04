@@ -412,7 +412,7 @@ export const fetchAIFilteredProducts = catchAsyncError(async (req, res, next) =>
         .toLowerCase()
         .replace(/[^\p{L}\p{N}\s]/gu, "")
         .split(/\s+/)
-        .filter((word) => word.length > 1 && !stopWords.has(word))
+        .filter((word) => word.length > 0 && !stopWords.has(word))
         .map((word) => `%${word}%`);
     };
 
@@ -429,7 +429,6 @@ export const fetchAIFilteredProducts = catchAsyncError(async (req, res, next) =>
     );
 
     const filteredProducts = result.rows;
-
     if (filteredProducts.length === 0) {
       return res.status(200).json({
         success: true,
@@ -439,17 +438,9 @@ export const fetchAIFilteredProducts = catchAsyncError(async (req, res, next) =>
     }
 
     const { success, products } = await getAIRecommendation(
-      req,
-      res,
       userPrompt,
       filteredProducts
     );
 
-    res.status(200).json({
-      success: success,
-      message: products.length === 0
-        ? "No products found matching your prompt."
-        : "AI filtered products.",
-      products,
-    });
+    res.status(200).json(products || []);
 });

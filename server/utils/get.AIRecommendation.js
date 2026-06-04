@@ -1,47 +1,55 @@
-export async function getAIRecommendation(req, res, userPrompt, products) {
-  const API_KEY = process.env.GEMINI_API_KEY;
-  const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+import Groq from "groq-sdk";
+
+export async function getAIRecommendation(userPrompt, products) {
+  const client = new Groq({
+    apiKey: process.env.GROQ_API_KEY,
+  });
 
   try {
-    const geminiPrompt = `
-        Here is a list of avaiable products:
+    const prompt = `
+        Here is a list of available products:
         ${JSON.stringify(products, null, 2)}
 
         Based on the following user request, filter and suggest the best matching products:
         "${userPrompt}"
 
-        Only return the matching products in JSON format.
+        Only return the matching products in JSON format as an array. Do not include any explanation.
     `;
 
-    const response = await fetch(URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: geminiPrompt }] }],
-      }),
+    const message = await client.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
     });
 
-    const data = await response.json();
-    const aiResponseText =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
-    const cleanedText = aiResponseText.replace(/```json|```/g, ``).trim();
+    const aiResponseText = message.choices[0].message.content;
 
-    if (!cleanedText) {
-      return res
-        .status(500)
-        .json({ success: false, message: "AI response is empty or invalid." });
+    if (!aiResponseText) {
+      return { success: false, products: [] };
     }
+
+    const cleanedText = aiResponseText
+      .replace(/```json|```/g, "")
+      .trim();
 
     let parsedProducts;
     try {
       parsedProducts = JSON.parse(cleanedText);
+      if (!Array.isArray(parsedProducts)) {
+        parsedProducts = [parsedProducts];
+      }
     } catch (error) {
-      return res
-        .status(500)
-        .json({ success: false, message: "Failed to parse AI response" });
+      console.log("Failed to parse Groq response:", error.message);
+      return { success: false, products: [] };
     }
+
     return { success: true, products: parsedProducts };
   } catch (error) {
-    res.status(500).json({ success: false, message: "Internal server error." });
+    console.log("Groq API error:", error.message);
+    return { success: false, products: [] };
   }
 }

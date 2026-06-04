@@ -11,7 +11,7 @@ import {
 
 const router = express.Router();
 
-router.get("/getallusers", isAuthenticated, authorizeRoles("Admin"), getAllUsers);
+router.get("/get-all-users", isAuthenticated, authorizeRoles("Admin"), getAllUsers);
 router.delete("/users/:id", isAuthenticated, authorizeRoles("Admin"), deleteUser);
 router.get("/dashboard/stats", isAuthenticated, authorizeRoles("Admin"), dashboardStats);
 
