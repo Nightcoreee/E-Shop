@@ -4,7 +4,7 @@ import database from "../database/db.js";
 import { v2 as cloudinary } from "cloudinary";
 import { generatePaymentIntent } from "../utils/gen.PaymentIntent.js";
 
-//POST /api/v1/order/new
+//POST /api/v1/orders/
 export const placeNewOrder = catchAsyncError(async (req, res, next) => {
   const {
     full_name,
@@ -131,7 +131,7 @@ export const placeNewOrder = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//GET /api/v1/order/single/:orderId
+//GET /api/v1/orders/:orderId
 export const fetchSingleOrder = catchAsyncError(async (req, res, next) => {
   const { orderId } = req.params;
 
@@ -174,7 +174,7 @@ export const fetchSingleOrder = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//GET /api/v1/order/myorders
+//GET /api/v1/orders/my
 export const fetchMyOrders = catchAsyncError(async (req, res, next) => {
   const result = await database.query(
     `
@@ -217,7 +217,7 @@ export const fetchMyOrders = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//GET /api/v1/order/admin/all
+//GET /api/v1/orders/admin/
 export const fetchAllOrders = catchAsyncError(async (req, res, next) => {
   const result = await database.query(
     `
@@ -259,7 +259,7 @@ export const fetchAllOrders = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//PUT /api/v1/order/admin/update/:orderId
+//PUT /api/v1/orders/admin/:orderId
 export const updateOrderStatus = catchAsyncError(async (req, res, next) => {
   const { status } = req.body;
 
@@ -283,7 +283,7 @@ export const updateOrderStatus = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//DELETE /api/v1/order/admin/delete/:orderId
+//DELETE /api/v1/orders/admin/:orderId
 export const deleteOrder = catchAsyncError(async (req, res, next) => {
   const { orderId } = req.params;
   const result = await database.query(`SELECT * FROM orders WHERE id = $1`, [orderId]);

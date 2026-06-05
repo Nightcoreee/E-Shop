@@ -85,7 +85,7 @@ export const getUser = catchAsyncError(async (req, res, next) => {
     });
 });
 
-//GET /api/v1/auth/logout
+//POST /api/v1/auth/logout
 export const logout = catchAsyncError(async (req, res, next) => {
     res.cookie("token", null, {
         expires: new Date(Date.now()),
@@ -98,7 +98,7 @@ export const logout = catchAsyncError(async (req, res, next) => {
 
 });
 
-//POST /api/v1/auth/forgot-password
+//POST /api/v1/auth/password/forgot
 export const forgotPassword = catchAsyncError(async (req, res, next) => {
     const { email } = req.body;
     const { frontendUrl } = req.body;
@@ -139,7 +139,7 @@ export const forgotPassword = catchAsyncError(async (req, res, next) => {
     }
 });
 
-//PUT /api/v1/auth/password/reset/:token
+//PATCH /api/v1/auth/password/reset/:token
 export const resetPassword = catchAsyncError(async (req, res, next) => {
     const { token } = req.params;
     const { password, confirmPassword } = req.body;
@@ -180,7 +180,7 @@ export const resetPassword = catchAsyncError(async (req, res, next) => {
     sendToken(updatedUser.rows[0], "Password reset successfully", 200, res);
 });
 
-//PUT /api/v1/auth/password/update
+//PATCH /api/v1/auth/password/update
 export const updatePassword = catchAsyncError(async (req, res, next) => {
     const { currentPassword, newPassword, confirmPassword} = req.body;
     
@@ -212,7 +212,7 @@ export const updatePassword = catchAsyncError(async (req, res, next) => {
     });
 });
 
-//PUT /api/v1/auth/profile/update
+//PATCH /api/v1/auth/profile
 export const updateProfile = catchAsyncError(async (req, res, next) => {
     const { name, email } = req.body;
 

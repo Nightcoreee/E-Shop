@@ -3,7 +3,7 @@ import {
     createProduct,
     fetchAllProducts,
     fetchSingleProduct,
-    postProductReview,
+    upsertProductReview,
     deleteReview,
     updateProduct,
     deleteProduct,
@@ -16,14 +16,17 @@ import {
 
 const router = express.Router();
 
-router.get("/", fetchAllProducts);
-router.post("/admin/create", isAuthenticated, authorizeRoles("Admin"), createProduct);
-router.put("/admin/update/:productId",isAuthenticated,authorizeRoles("Admin"),updateProduct);
-router.delete("/admin/delete/:productId",isAuthenticated,authorizeRoles("Admin"),deleteProduct);
+//Admin routes
+router.post("/admin/", isAuthenticated, authorizeRoles("Admin"), createProduct);
+router.put("/admin/:productId",isAuthenticated,authorizeRoles("Admin"),updateProduct);
+router.delete("/admin/:productId",isAuthenticated,authorizeRoles("Admin"),deleteProduct);
 
-router.get("/single-product/:productId", fetchSingleProduct);
-router.put("/post-new/review/:productId", isAuthenticated, postProductReview);
-router.delete("/delete/review/:productId", isAuthenticated, deleteReview);
+// Public routes
+router.get("/", fetchAllProducts);
+router.get("/:productId", fetchSingleProduct);
 router.post("/ai-search", isAuthenticated, fetchAIFilteredProducts);
+
+router.put("/:productId/reviews", isAuthenticated, upsertProductReview);
+router.delete("/:productId/reviews", isAuthenticated, deleteReview);
 
 export default router;

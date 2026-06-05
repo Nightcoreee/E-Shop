@@ -3,7 +3,7 @@ import { ErrorHandler } from "../middlewares/error.Middleware.js";
 import database from "../database/db.js";
 import { v2 as cloudinary } from "cloudinary";
 
-//GET /api/v1/admin/getallusers
+//GET /api/v1/admin/users?page=1
 export const getAllUsers = catchAsyncError(async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
 
@@ -167,6 +167,7 @@ export const dashboardStats = catchAsyncError(async (req, res, next) => {
   let revenueGrowth = "0%";
 
   if (lastMonthRevenue > 0) {
+    // Calculate growth rate
     const growthRate =
       ((currentMonthSales - lastMonthRevenue) / lastMonthRevenue) * 100;
     revenueGrowth = `${growthRate >= 0 ? "+" : ""}${growthRate.toFixed(2)}%`;

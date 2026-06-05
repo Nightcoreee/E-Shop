@@ -14,11 +14,11 @@ import {
 
 const router = express.Router();
 
-router.post("/new", isAuthenticated, placeNewOrder);
-router.get("/single/:orderId", isAuthenticated, fetchSingleOrder);
-router.get("/my-orders", isAuthenticated, fetchMyOrders);
+router.post("/", isAuthenticated, placeNewOrder);
+router.get("/:orderId", isAuthenticated, fetchSingleOrder);
+router.get("/my", isAuthenticated, fetchMyOrders);
 
-router.get("/admin/all", isAuthenticated, authorizeRoles("Admin"), fetchAllOrders);
-router.put("/admin/update/:orderId", isAuthenticated, authorizeRoles("Admin"), updateOrderStatus);
-router.delete("/admin/delete/:orderId", isAuthenticated, authorizeRoles("Admin"), deleteOrder);
+router.get("/admin/", isAuthenticated, authorizeRoles("Admin"), fetchAllOrders);
+router.put("/admin/:orderId", isAuthenticated, authorizeRoles("Admin"), updateOrderStatus);
+router.delete("/admin/:orderId", isAuthenticated, authorizeRoles("Admin"), deleteOrder);
 export default router;

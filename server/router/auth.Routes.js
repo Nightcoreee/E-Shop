@@ -15,11 +15,15 @@ const router = express.Router();
 
 router.post("/register", register);
 router.post("/login", login);
+router.post("/logout", isAuthenticated, logout);
 router.get("/me", isAuthenticated ,getUser);
-router.get("/logout", isAuthenticated, logout);
+
+//Password routes
 router.post("/password/forgot", forgotPassword);
-router.put("/password/reset/:token", resetPassword);
-router.put("/password/update", isAuthenticated, updatePassword);
-router.put("/profile/update", isAuthenticated, updateProfile);
+router.patch("/password/reset/:token", resetPassword);
+router.patch("/password/update", isAuthenticated, updatePassword);
+
+//Profile route
+router.patch("/profile", isAuthenticated, updateProfile);
 
 export default router;
