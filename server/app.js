@@ -89,8 +89,8 @@ app.use(fileUpload({
 }));
 
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/product", productRoutes);
-app.use("/api/v1/order", orderRoutes);
+app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/orders", orderRoutes);
 app.use("/api/v1/admin", adminRoutes);
 
 createTables();
