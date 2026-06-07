@@ -16,6 +16,7 @@ export const placeNewOrder = catchAsyncError(async (req, res, next) => {
     phone,
     orderedItems,
   } = req.body;
+  
   if (
     !full_name ||
     !state ||

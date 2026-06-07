@@ -292,7 +292,7 @@ export const upsertProductReview = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//DELETE /api/v1/products/:productId/reviews
+//DELETE /api/v1/products/review/:productId
 export const deleteReview = catchAsyncError(async (req, res, next) => {
   const { productID } = req.params;
 
@@ -321,7 +321,7 @@ export const deleteReview = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//PUT /api/v1/product/admin/:productId
+//PUT /api/v1/products/admin/:productId
 export const updateProduct = catchAsyncError(async (req, res, next) => {
   const { productId } = req.params;
   const { name, description, price, category, stock } = req.body;
@@ -348,7 +348,7 @@ export const updateProduct = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//DELETE /api/v1/products/admin/:productId                                     
+//DELETE /api/v1/products/admin/:productId                                       
 export const deleteProduct = catchAsyncError(async (req, res, next) => {
   const { productId } = req.params;
 

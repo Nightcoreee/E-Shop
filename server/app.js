@@ -10,14 +10,15 @@ import productRoutes from "./router/product.Routes.js";
 import orderRoutes from "./router/order.Routes.js";
 import adminRoutes from "./router/admin.Routes.js";
 import database from "./database/db.js";
-import stripe from "stripe";
+import Stripe from "stripe";
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const app = express();
 
 
 app.use(cors({
     origin: [process.env.FRONTEND_URL, process.env.DASHBOARD_URL],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
 }));
 
@@ -28,7 +29,7 @@ app.post(
     const sig = req.headers["stripe-signature"];
     let event;
     try {
-      event = Stripe.webhooks.constructEvent(
+      event = stripe.webhooks.constructEvent(
         req.body,
         sig,
         process.env.STRIPE_WEBHOOK_SECRET
@@ -39,13 +40,13 @@ app.post(
 
     // Handling the Event
     if (event.type === "payment_intent.succeeded") {
-      const paymentIntent_client_secret = event.data.object.client_secret;
+      const paymentIntent_id = event.data.object.id;
       try {
         // FINDING AND UPDATED PAYMENT
         const updatedPaymentStatus = "Paid";
         const paymentTableUpdateResult = await database.query(
           `UPDATE payments SET payment_status = $1 WHERE payment_intent_id = $2 RETURNING *`,
-          [updatedPaymentStatus, paymentIntent_client_secret]
+          [updatedPaymentStatus, paymentIntent_id]
         );
         await database.query(
           `UPDATE orders SET paid_at = NOW() WHERE id = $1 RETURNING *`,
