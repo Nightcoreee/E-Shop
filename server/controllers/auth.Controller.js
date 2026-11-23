@@ -1,12 +1,12 @@
 import { ErrorHandler } from "../middlewares/error.Middleware.js";
-import { catchAsyncError } from "../middlewares/catchAsyncError.js";
+import { catchAsyncError } from "../middlewares/catchAsyncError.Middleware.js";
 import database from "../database/db.js";
 import bcrypt from "bcrypt";
 import { sendToken } from "../utils/jwt.Token.js";
 import { emailValidator, passwordValidator } from "../utils/user.Validator.js";
 import { genResetPasswordToken } from "../utils/resetPassword.Token.js";
-import { genForgotPasswordEmailTemplate } from "../utils/forgotPasswordEmail.Template.js";
-import { sendEmail } from "../utils/sendEmail.js";
+import { genForgotPasswordEmailTemplate } from "../utils/forgotPassword.Template.js";
+import { sendEmail } from "../utils/email.Sender.js";
 import crypto from "crypto";
 import { v2 as cloudinary } from "cloudinary";
 

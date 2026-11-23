@@ -1,8 +1,8 @@
-import { catchAsyncError } from "../middlewares/catchAsyncError.js";
+import { catchAsyncError } from "../middlewares/catchAsyncError.Middleware.js";
 import { ErrorHandler } from "../middlewares/error.Middleware.js";
 import database from "../database/db.js";
 import { v2 as cloudinary } from "cloudinary";
-import { generatePaymentIntent } from "../utils/gen.PaymentIntent.js";
+import { generatePaymentIntent } from "../utils/paymentIntent.Generator.js.js";
 
 //POST /api/v1/orders/
 export const placeNewOrder = catchAsyncError(async (req, res, next) => {

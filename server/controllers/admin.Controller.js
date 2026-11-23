@@ -1,4 +1,4 @@
-import { catchAsyncError } from "../middlewares/catchAsyncError.js";
+import { catchAsyncError } from "../middlewares/catchAsyncError.Middleware.js";
 import { ErrorHandler } from "../middlewares/error.Middleware.js";
 import database from "../database/db.js";
 import { v2 as cloudinary } from "cloudinary";

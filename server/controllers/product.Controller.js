@@ -1,8 +1,8 @@
-import { catchAsyncError } from "../middlewares/catchAsyncError.js";
+import { catchAsyncError } from "../middlewares/catchAsyncError.Middleware.js";
 import { ErrorHandler }from "../middlewares/error.Middleware.js";
 import database from "../database/db.js";
 import { v2 as cloudinary } from "cloudinary";
-import { getAIRecommendation } from "../utils/get.AIRecommendation.js";                                
+import { getAIRecommendation } from "../services/ai.Recommend.Service.js";                                
 
 //POST /api/v1/products/admin/
 export const createProduct = catchAsyncError(async (req, res, next) => {
