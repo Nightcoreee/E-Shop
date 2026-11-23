@@ -3,7 +3,7 @@ import cors from "cors";
 import express from "express";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
-import { createTables } from "./utils/create.Tables.js";
+import { createTables } from "./database/tables.Init.js";
 import { errorMiddleware } from "./middlewares/error.Middleware.js";
 import authRoutes from "./router/auth.Routes.js";
 import productRoutes from "./router/product.Routes.js";
