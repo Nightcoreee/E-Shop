@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Facebook,
-  Twitter,
-  Instagram,
-  Youtube,
-} from "lucide-react";
-
+// import {
+//   Mail,
+//   Phone,
+//   MapPin,
+//   Facebook,
+//   Twitter,
+//   Instagram,
+//   Youtube,
+// } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 const Footer = () => {
   const footerLinks = {
     company: [
@@ -32,10 +32,10 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Youtube, href: "#", label: "YouTube" },
+    // { icon: Facebook, href: "#", label: "Facebook" },
+    // { icon: Twitter, href: "#", label: "Twitter" },
+    // { icon: Instagram, href: "#", label: "Instagram" },
+    // { icon: Youtube, href: "#", label: "YouTube" },
   ];
 
   return (
@@ -62,7 +62,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3 text-muted-foreground">
                 <MapPin className="w-5 h-5 text-primary" />
-                <span>San Francisco, CA</span>
+                <span>Bà Điểm, TP. HCM</span>
               </div>
             </div>
           </div>
@@ -167,10 +167,10 @@ const Footer = () => {
 
           <div className="text-center md:text-right">
             <p className="text-muted-foreground text-sm">
-              © 2024 ShopMate. All rights reserved.
+              © 2026 ShopMate. All rights reserved.
             </p>
             <p className="text-muted-foreground text-xs mt-1">
-              Developed By CodeWithZeeshu
+              Developed By Hà Đào
             </p>
           </div>
         </div>
