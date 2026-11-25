@@ -24,6 +24,6 @@ router.patch("/password/reset/:token", resetPassword);
 router.patch("/password/update", isAuthenticated, updatePassword);
 
 //Profile route
-router.patch("/profile", isAuthenticated, updateProfile);
+router.patch("/profile/update", isAuthenticated, updateProfile);
 
 export default router;
