@@ -1,7 +1,12 @@
 import { Menu, User, ShoppingCart, Sun, Moon, Search } from "lucide-react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleSidebar } from "../../store/slices/popupSlice";
+import { 
+  toggleSidebar,
+  toggleSearchBar,
+  toggleAuthPopup,
+  toggleCart,
+ } from "../../store/slices/popupSlice";
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
